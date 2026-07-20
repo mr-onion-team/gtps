@@ -166,12 +166,14 @@ export class ITextPacket {
       const password = this.obj.tankIDPass as string;
 
       let player = await this.base.database.players.get(growId.toLowerCase());
+      let isNewAccount = false;
       if (!player) {
         const id = await this.base.database.players.set(growId, password);
         if (!id) throw new Error("Failed to create account");
         player = await this.base.database.players.get(growId.toLowerCase());
         if (!player) throw new Error("Failed to create account");
         logger.info(`New account created: ${growId}`);
+        isNewAccount = true;
       } else {
         const isValid = await bcrypt.compare(password, player.password);
         if (!isValid) throw new Error("Password are invalid");
@@ -207,6 +209,7 @@ export class ITextPacket {
             id:     32, // Wrench
             amount: 1,
           },
+          ...(isNewAccount ? [{ id: 242, amount: 1 }] : []),
         ],
       };
 
