@@ -16,7 +16,7 @@ import { ConnectListener } from "../events/Connect";
 import { DisconnectListener } from "../events/Disconnect";
 import { type PackageJson } from "type-fest";
 import { RawListener } from "../events/Raw";
-import { readFileSync } from "fs";
+import { readFileSync, readdirSync } from "fs";
 import {
   Cache,
   CDNContent,
@@ -287,12 +287,6 @@ export class Base {
     //   consola.error("Failed to load custom items: " + e);
     // }
 
-    await itemsDat.encode();
-
-    const bufData = Buffer.from(itemsDat.buffer.data);
-    const hash = RTTEX.hash(bufData);
-    this.items.content = bufData;
-    this.items.hash = `${hash}`;
     this.items.metadata = itemsDat.meta;
 
     const wikiFile = await readFile(
@@ -301,7 +295,7 @@ export class Base {
     );
     this.items.wiki = JSON.parse(wikiFile) as ItemsInfo[];
 
-    logger.info(`Items data hash: ${hash}`);
+    logger.info(`Items data hash: ${this.items.hash}`);
     logger.info("Successfully parsing items data");
   }
 
@@ -323,6 +317,14 @@ export class Base {
       return data;
     } catch (e) {
       logger.error(`Failed to get latest CDN: ${e}`);
+      logger.info("Falling back to local items.dat");
+      const datDir = join(__dirname, ".cache", "growtopia", "dat");
+      const files = readdirSync(datDir).filter((f) => f.endsWith(".dat"));
+      const latest = files.sort().reverse()[0];
+      if (latest) {
+        const version = latest.match(/items-v(\d+\.\d+)\.dat/)?.[1] || "0.0";
+        return { version, uri: "0000/0000", itemsDatName: latest };
+      }
       return { version: "", uri: "", itemsDatName: "" };
     }
   }

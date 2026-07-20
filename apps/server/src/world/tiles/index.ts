@@ -44,7 +44,12 @@ const tileFrom = (
   itemType?: ActionTypes,
 ) => {
   const type =
-    itemType ?? base.items.metadata.items.get(data.fg.toString())!.type!;
+    itemType ??
+    base.items.metadata.items.get(data.fg.toString())?.type ??
+    (data.door ? ActionTypes.MAIN_DOOR : undefined) ??
+    (data.lock ? ActionTypes.LOCK : undefined) ??
+    (data.sign ? ActionTypes.SIGN : undefined) ??
+    ActionTypes.FOREGROUND;
   try {
     const tile = new TileMap[type](base, world, data);
     return tile;

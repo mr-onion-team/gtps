@@ -165,11 +165,17 @@ export class ITextPacket {
       const growId = this.obj.tankIDName as string;
       const password = this.obj.tankIDPass as string;
 
-      const player = await this.base.database.players.get(growId.toLowerCase());
-      if (!player) throw new Error("Player not found");
-
-      const isValid = await bcrypt.compare(password, player.password);
-      if (!isValid) throw new Error("Password are invalid");
+      let player = await this.base.database.players.get(growId.toLowerCase());
+      if (!player) {
+        const id = await this.base.database.players.set(growId, password);
+        if (!id) throw new Error("Failed to create account");
+        player = await this.base.database.players.get(growId.toLowerCase());
+        if (!player) throw new Error("Failed to create account");
+        logger.info(`New account created: ${growId}`);
+      } else {
+        const isValid = await bcrypt.compare(password, player.password);
+        if (!isValid) throw new Error("Password are invalid");
+      }
 
       const targetPeerId = this.base.cache.peers.find(
         (v) => v.userID === player.id,

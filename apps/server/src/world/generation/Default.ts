@@ -80,7 +80,7 @@ export class Default extends WorldGen {
                     ? 2
                     : 10
                 : 8;
-          block.bg = 14;
+          block.bg = 0;
         }
 
         this.data.blocks.push(block);
