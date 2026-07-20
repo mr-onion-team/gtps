@@ -4,6 +4,7 @@ import { Peer } from "../../core/Peer";
 import { DialogBuilder } from "@growserver/utils";
 import { Variant } from "growtopia.js";
 import { ItemsInfo } from "@growserver/types";
+import logger from "@growserver/logger";
 
 export class Info {
   private readonly items = new Map<number, ItemsInfo>();
@@ -18,7 +19,7 @@ export class Info {
         this.items.set(it.id, it);
       });
     } else {
-      console.error("Items wiki data not loaded properly in Base class");
+      logger.error("Items wiki data not loaded properly in Base class");
     }
   }
 

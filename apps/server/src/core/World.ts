@@ -16,6 +16,7 @@ import { Default } from "../world/generation/Default";
 import { Tile } from "../world/Tile";
 import { tileFrom } from "../world/tiles";
 import { ItemDefinition, ItemsDatMeta } from "grow-items";
+import logger from "@growserver/logger";
 
 export class World {
   public data: WorldData;
@@ -211,7 +212,7 @@ ${peer.data.lastVisitedWorlds
 
     // Validate world data
     if (!this.data || !this.data.blocks || this.data.blocks.length === 0) {
-      console.error("World data is invalid or empty!");
+      logger.error("World data is invalid or empty!");
       peer.send(
         Variant.from("OnConsoleMessage", "`4Error: World data is corrupted!"),
       );
@@ -224,7 +225,7 @@ ${peer.data.lastVisitedWorlds
 
     // Verify block count matches
     if (this.data.blocks.length !== blockCount) {
-      console.warn(
+      logger.warn(
         `Block count mismatch! Expected: ${blockCount}, Got: ${this.data.blocks.length}`,
       );
     }
@@ -238,9 +239,8 @@ ${peer.data.lastVisitedWorlds
     buffer.writeUint32LE(this.data.height, 12 + this.worldName.length);
     buffer.writeUint32LE(blockCount, 16 + this.worldName.length);
 
-    console.log(
-      "Header bytes:",
-      buffer.slice(0, Math.min(20, buffer.length)).toString("hex"),
+    logger.debug(
+      `Header bytes: ${buffer.slice(0, Math.min(20, buffer.length)).toString("hex")}`,
     );
 
     // Tambahan 5 bytes, gatau ini apaan
@@ -267,13 +267,12 @@ ${peer.data.lastVisitedWorlds
 
       // Log first block for debugging
       if (blockBytes.length > 0) {
-        console.log(
-          "First block data (first 32 bytes):",
-          Buffer.from(blockBytes.slice(0, 32)).toString("hex"),
+        logger.debug(
+          `First block data: ${Buffer.from(blockBytes.slice(0, 32)).toString("hex")}`,
         );
       }
     } catch (error) {
-      console.error("Error serializing blocks:", error);
+      logger.error(`Error serializing blocks: ${error}`);
       throw error;
     }
 

@@ -26,9 +26,7 @@
     },
     "setup": {
       "dependsOn": ["^setup"],
-      "cache": false,
-      "persistent": true,
-      "interactive": true
+      "cache": false
     }
   }
 }

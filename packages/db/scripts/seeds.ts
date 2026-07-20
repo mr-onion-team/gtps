@@ -25,8 +25,7 @@ export async function setupSeeds() {
   const db = drizzle(connection);
   const dateNow = new Date().toISOString().slice(0, 19).replace("T", " ");
 
-  // Drop and recreate table if it exists
-  await connection.unsafe(`DROP TABLE IF EXISTS players CASCADE;`);
+  // Create table if not exists (SAFE - no DROP)
   await connection.unsafe(`
     CREATE TABLE IF NOT EXISTS players (
       id SERIAL PRIMARY KEY,

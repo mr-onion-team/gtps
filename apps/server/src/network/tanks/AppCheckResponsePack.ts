@@ -2,6 +2,7 @@ import { TankPacket } from "growtopia.js";
 import { Base } from "../../core/Base";
 import { Peer } from "../../core/Peer";
 import { World } from "../../core/World";
+import logger from "@growserver/logger";
 
 export class AppCheckResponsePack {
   constructor(
@@ -12,18 +13,16 @@ export class AppCheckResponsePack {
   ) {}
 
   public async execute() {
-    // Client validation
-    console.log("Executing AppCheckResponsePack...");
     if (this.tank.data?.type === 24) {
-      console.log("Valid APP_CHECK_RESPONSE packet received.");
+      logger.info("Valid APP_CHECK_RESPONSE packet received.");
       if (this.peer.isValid()) {
-        console.log("Peer is valid.");
+        logger.info("Peer is valid.");
       } else {
-        console.log("Peer is invalid. Disconnecting...");
+        logger.warn("Peer is invalid. Disconnecting...");
         this.peer.disconnect();
       }
     } else {
-      console.log("Invalid APP_CHECK_RESPONSE packet received.");
+      logger.warn("Invalid APP_CHECK_RESPONSE packet received.");
     }
   }
 }

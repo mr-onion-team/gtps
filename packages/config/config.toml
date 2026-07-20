@@ -1,6 +1,6 @@
 [web]
 development = true
-address = "127.0.0.1"
+address = "0.0.0.0"
 port = 443
 ports = [17091]
 loginUrl = "login.growserver.app:8080"

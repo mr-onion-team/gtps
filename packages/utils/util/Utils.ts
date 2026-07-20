@@ -216,10 +216,9 @@ export async function setupWebsite() {
 
   logger.info("Setup website assets");
   try {
-    console.log(
-      join(__dirname, ".cache", "compressed", "build.zip"),
-      "awdjawidjwad",
-    );
+      logger.debug(
+        `Extracting ${join(__dirname, ".cache", "compressed", "build.zip")}`,
+      );
     await decompress(
       join(__dirname, ".cache", "compressed", "build.zip"),
       join(__dirname, ".cache"),

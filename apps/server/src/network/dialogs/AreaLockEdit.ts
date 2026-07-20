@@ -65,10 +65,9 @@ export class AreaLockEdit {
     else this.block.flags &= ~TileFlags.PUBLIC;
 
     this.block.lock.ignoreEmptyAir = ignoreEmpty;
-    // @ts-expect-error TODO: maybe wrong type here?
     this.block.lock.permission = allowBuildOnly
       ? LockPermission.BUILD
-      : mLock?.defaultPermission;
+      : (mLock?.defaultPermission ?? LockPermission.FULL);
     this.block.lock.adminLimited = adminLimitedAccess;
 
     if (this.action.buttonClicked === "reapply_lock" && mLock) {

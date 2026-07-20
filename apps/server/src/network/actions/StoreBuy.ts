@@ -186,10 +186,15 @@ export class StoreBuy {
     const actionItem = this.findStoreItemByName(action.item);
     if (
       !validTabs.includes(action.item) &&
-      this.findStoreItemByName(action.item)
+      actionItem
     ) {
-      this.peer.addItemInven(actionItem?.itemId as number, 1);
-      this.peer.data.gems -= (actionItem?.cost as number) ?? 0;
+      const cost = (actionItem.cost as number) ?? 0;
+      if ((this.peer.data.gems ?? 0) < cost) {
+        this.peer.send(Variant.from("OnConsoleMessage", "Not enough gems!"));
+        return;
+      }
+      this.peer.addItemInven(actionItem.itemId as number, 1);
+      this.peer.data.gems -= cost;
       this.peer.setGems(this.peer.data.gems);
     }
 
